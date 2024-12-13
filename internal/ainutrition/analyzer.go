@@ -2,6 +2,7 @@ package ainutrition
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 
 	openai "github.com/sashabaranov/go-openai"
@@ -53,7 +54,7 @@ func (a *Analyzer) AnalyzeFood(ctx context.Context, imageData []byte, descriptio
 	}
 
 	resp, err := a.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
-		Model:    openai.GPT3Dot5Turbo,
+		Model:    openai.GPT4oMini,
 		Messages: messages,
 	})
 
@@ -66,5 +67,5 @@ func (a *Analyzer) AnalyzeFood(ctx context.Context, imageData []byte, descriptio
 
 func toBase64(data []byte) string {
 	// Implement base64 encoding
-	return ""
+	return base64.StdEncoding.EncodeToString(data)
 }
