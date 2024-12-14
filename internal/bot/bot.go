@@ -53,6 +53,10 @@ func (b *FoodAnalysisBot) Start() {
 func (b *FoodAnalysisBot) handleUpdate(update tgbotapi.Update) {
 	userID := update.Message.From.ID
 
+	if update.Message.IsCommand() {
+		b.handleCommand(userID, update.Message)
+		return
+	}
 	// Handle photo and text inputs
 	if update.Message.Photo != nil {
 		b.handlePhoto(userID, update.Message)

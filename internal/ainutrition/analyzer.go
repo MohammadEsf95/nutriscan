@@ -20,7 +20,7 @@ func (a *Analyzer) AnalyzeFood(ctx context.Context, imageData []byte, descriptio
 	messages := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
-			Content: "You are a nutritional analysis assistant. Analyze the food image and description. Provide nutritional values: calories, protein (g), fiber (g), carbohydrates (g), and sugar (g). If the food description is unclear, ask for more specific details.",
+			Content: "You are a food nutrition calculator. Users will send pictures of their meals, text descriptions, or both. You must calculate the total calories, protein, carbohydrates, fat, fiber, and sugar in this exact order. Respond in Farsi only. If the input is irrelevant or unrecognizable, send a standard error message in Farsi and ask the user to upload the information again. Be approximate and avoid being overly exact. Do not ask for additional details.",
 		},
 	}
 
@@ -66,6 +66,5 @@ func (a *Analyzer) AnalyzeFood(ctx context.Context, imageData []byte, descriptio
 }
 
 func toBase64(data []byte) string {
-	// Implement base64 encoding
 	return base64.StdEncoding.EncodeToString(data)
 }

@@ -11,6 +11,12 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+func (b *FoodAnalysisBot) handleCommand(userID int64, message *tgbotapi.Message) {
+	if message.Command() == "start" {
+		b.sendMessage(userID, "سلام! من بات شناسایی غذا هستم. لطفا عکس یا متن غذاتو ارسال کن.")
+	}
+}
+
 func (b *FoodAnalysisBot) handlePhoto(userID int64, message *tgbotapi.Message) {
 	photoSize := (message.Photo)[len(message.Photo)-1]
 	fileConfig := tgbotapi.FileConfig{FileID: photoSize.FileID}
@@ -29,12 +35,14 @@ func (b *FoodAnalysisBot) handlePhoto(userID int64, message *tgbotapi.Message) {
 	state := b.userStates.GetOrCreateState(userID)
 	state.PendingImage = imageData
 	b.userStates.UpdateState(userID, state)
+	b.sendMessage(userID, "اگه اطلاعات بیشتری لازمه بگو")
 }
 
 func (b *FoodAnalysisBot) handleText(userID int64, message *tgbotapi.Message) {
 	state := b.userStates.GetOrCreateState(userID)
 
 	// Check if waiting for more details
+	// This condition never mets true
 	if state.WaitingForDetail {
 		state.PendingText += " " + message.Text
 		state.WaitingForDetail = false
