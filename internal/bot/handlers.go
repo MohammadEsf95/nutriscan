@@ -6,13 +6,25 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"nutriscan/internal/users"
 	"os"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func (b *FoodAnalysisBot) handleCommand(userID int64, message *tgbotapi.Message) {
 	if message.Command() == "start" {
+		_, err := b.userHandler.CreateUser(users.User{
+			ID:        userID,
+			FirstName: message.From.FirstName,
+			LastName:  message.From.LastName,
+			Username:  message.From.UserName,
+			CreatedAt: time.Now(),
+		})
+		if err != nil {
+			log.Println("Error creating user:", err)
+		}
 		b.sendMessage(userID, "سلام! من بات شناسایی غذا هستم. لطفا عکس یا متن غذاتو ارسال کن.")
 	}
 }

@@ -16,6 +16,7 @@ func main() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
+	// Initialize database
 	dbConfig, err := database.LoadConfig()
 	if err != nil {
 		log.Fatal(err)
@@ -30,13 +31,18 @@ func main() {
 		log.Fatal(err)
 	}
 
+	userRepository := users.NewUserRepository(db)
+	userService := users.NewUserService(userRepository)
+	userHandler := users.NewUserHandler(userService)
+
+	// Initialize bot configuration
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
 
 	// Initialize and start the bot
-	foodBot, err := bot.NewFoodAnalysisBot(cfg)
+	foodBot, err := bot.NewFoodAnalysisBot(cfg, userHandler)
 	if err != nil {
 		log.Fatalf("Failed to create bot: %v", err)
 	}

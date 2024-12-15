@@ -4,6 +4,7 @@ import (
 	"nutriscan/internal/ainutrition"
 	"nutriscan/internal/config"
 	"nutriscan/internal/storage"
+	"nutriscan/internal/users"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	openai "github.com/sashabaranov/go-openai"
@@ -14,9 +15,10 @@ type FoodAnalysisBot struct {
 	openaiClient *openai.Client
 	userStates   *storage.UserStateManager
 	analyzer     *ainutrition.Analyzer
+	userHandler  *users.UserHandler
 }
 
-func NewFoodAnalysisBot(cfg *config.BotConfig) (*FoodAnalysisBot, error) {
+func NewFoodAnalysisBot(cfg *config.BotConfig, userHandler *users.UserHandler) (*FoodAnalysisBot, error) {
 	// Initialize Telegram Bot
 	bot, err := tgbotapi.NewBotAPI(cfg.TelegramToken)
 	if err != nil {
@@ -32,6 +34,7 @@ func NewFoodAnalysisBot(cfg *config.BotConfig) (*FoodAnalysisBot, error) {
 		openaiClient: openaiClient,
 		userStates:   storage.NewUserStateManager(),
 		analyzer:     ainutrition.NewAnalyzer(openaiClient),
+		userHandler:  userHandler,
 	}, nil
 }
 
