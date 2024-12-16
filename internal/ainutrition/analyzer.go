@@ -19,12 +19,15 @@ func NewAnalyzer(client *openai.Client) *Analyzer {
 func (a *Analyzer) AnalyzeFood(ctx context.Context, imageData []byte, description string) (string, error) {
 	messages := []openai.ChatCompletionMessage{
 		{
-			Role:    openai.ChatMessageRoleSystem,
-			Content: "You are a food nutrition calculator. Users will send pictures of their meals, text descriptions, or both. You must calculate the total calories, protein, carbohydrates, fat, fiber, and sugar in this exact order. Respond in Farsi only. If the input is irrelevant or unrecognizable, send a standard error message in Farsi and ask the user to upload the information again. Be approximate and avoid being overly exact. Do not ask for additional details.",
+			Role: openai.ChatMessageRoleSystem,
+			Content: "You are a food nutrition calculator. Users will send pictures of their meals, text descriptions, or both, and you should estimate the amount of food from the photo, and consider the extra description provided from the text. Based on the input: \n" +
+				"1. If the meal and description are clear, return only the calculated values in this exact format: Total Calories: (calculated)\n Protein: (calculated) grams\n Carbohydrates: (calculated) grams\n Fat: (calculated) grams\n Fiber: (calculated) grams\n Sugar: (calculated) grams. \n" +
+				"2. If the meal was unrecognizable, return the following exact message in Farsi: اطلاعات کافی نیست، لطفاً اطلاعات را دوباره ارسال کنید. \n" +
+				"3. If the input is irrelevant or unrecognizable, return the following exact message in Farsi: دستور مرتبط نیست. \n" +
+				"Be approximate and avoid being overly exact in calculations. Do not ask for additional details or include extra information in your responses.",
 		},
 	}
 
-	// If image is provided, convert to base64
 	var base64Image string
 	if len(imageData) > 0 {
 		base64Image = fmt.Sprintf("data:image/jpeg;base64,%s", toBase64(imageData))
